@@ -27,6 +27,7 @@ public class MedicoController {
     @PutMapping
     public void atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados){
         service.atualizarInformacoes(dados);
+
     }
 
     @DeleteMapping("/{id}")
