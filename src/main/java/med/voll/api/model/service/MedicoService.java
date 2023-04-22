@@ -7,10 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MedicoService extends GenericCrudService<Medico> {
 
-    Page<Medico> findAll(Pageable paginacao);
-
     void atualizarInformacoes(DadosAtualizacaoMedico dados);
+
+    Page<Medico> findAllByAtivoTrue(Pageable paginacao);
 }

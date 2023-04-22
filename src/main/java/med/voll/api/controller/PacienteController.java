@@ -2,6 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.validation.Valid;
 import med.voll.api.model.entity.medico.DadosListagemMedico;
+import med.voll.api.model.entity.paciente.DadosAtualizacaoPaciente;
 import med.voll.api.model.entity.paciente.DadosCadastroPaciente;
 import med.voll.api.model.entity.paciente.DadosListagemPaciente;
 import med.voll.api.model.entity.paciente.Paciente;
@@ -27,10 +28,18 @@ public class PacienteController {
 
     @GetMapping
     public Page<DadosListagemPaciente> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao){
-        return service.findAll(paginacao)
+        return service.findAllByAtivoTrue(paginacao)
                 .map(DadosListagemPaciente::new);
-
     }
 
+    @PutMapping
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
+        service.atualizarInformacoes(dados);
+    }
+
+    @DeleteMapping("/{id}")
+    public void remover(@PathVariable Long id){
+        service.deleteById(id);
+    }
 
 }

@@ -1,5 +1,6 @@
 package med.voll.api.model.service;
 
+import med.voll.api.model.entity.paciente.DadosAtualizacaoPaciente;
 import med.voll.api.model.entity.paciente.DadosListagemPaciente;
 import med.voll.api.model.entity.paciente.Paciente;
 import org.springframework.data.domain.Page;
@@ -9,5 +10,7 @@ import java.util.Optional;
 
 public interface PacienteService extends GenericCrudService<Paciente> {
 
-    Page<Paciente> findAll(Pageable paginacao);
+    Page<Paciente> findAllByAtivoTrue(Pageable paginacao);
+
+    void atualizarInformacoes(DadosAtualizacaoPaciente dados);
 }

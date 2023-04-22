@@ -27,9 +27,11 @@ public class Medico implements BaseEntity {
     private Especialidade especialidade;
     @Embedded
     private Endereco endereco;
+    private Boolean ativo;
 
 
     public Medico(DadosCadastroMedico dados) {
+        this.ativo = Boolean.TRUE;
         this.nome = dados.nome();
         this.crm = dados.crm();
         this.email = dados.email();
@@ -45,5 +47,9 @@ public class Medico implements BaseEntity {
         if(dados.endereco() != null){
             this.endereco.atualizarInformacoes(dados.endereco());
         }
+    }
+
+    public void excluir() {
+        this.ativo = Boolean.FALSE;
     }
 }

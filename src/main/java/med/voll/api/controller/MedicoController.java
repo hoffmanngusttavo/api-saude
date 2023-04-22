@@ -27,7 +27,6 @@ public class MedicoController {
     @PutMapping
     public void atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados){
         service.atualizarInformacoes(dados);
-
     }
 
     @DeleteMapping("/{id}")
@@ -37,7 +36,7 @@ public class MedicoController {
 
     @GetMapping
     public Page<DadosListagemMedico> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao){
-        return service.findAll(paginacao)
+        return service.findAllByAtivoTrue(paginacao)
                 .map(DadosListagemMedico::new);
 
     }
