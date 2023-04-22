@@ -33,8 +33,6 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
                 throw new EntityNotFoundException("Id not found "+id);
             }
             repository.deleteById(id);
-        }catch (EntityNotFoundException ex){
-            throw new EntityNotFoundException(ex);
         }catch (Exception ex){
             throw new ServiceException("Não foi possível remover objeto com id "+id, ex);
         }

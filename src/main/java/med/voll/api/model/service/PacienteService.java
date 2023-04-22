@@ -12,5 +12,5 @@ public interface PacienteService extends GenericCrudService<Paciente> {
 
     Page<Paciente> findAllByAtivoTrue(Pageable paginacao);
 
-    void atualizarInformacoes(DadosAtualizacaoPaciente dados);
+    Paciente atualizarInformacoes(DadosAtualizacaoPaciente dados);
 }

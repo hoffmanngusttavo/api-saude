@@ -24,9 +24,10 @@ public class PacienteServiceImpl extends GenericCrudServiceImpl<Paciente>
 
     @Override
     @Transactional
-    public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
+    public Paciente atualizarInformacoes(DadosAtualizacaoPaciente dados) {
         var paciente = this.findById(dados.id());
         paciente.atualizarInformacoes(dados);
+        return paciente;
     }
 
     @Override

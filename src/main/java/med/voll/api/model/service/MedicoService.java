@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface MedicoService extends GenericCrudService<Medico> {
 
-    void atualizarInformacoes(DadosAtualizacaoMedico dados);
+    Medico atualizarInformacoes(DadosAtualizacaoMedico dados);
 
     Page<Medico> findAllByAtivoTrue(Pageable paginacao);
 }

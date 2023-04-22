@@ -22,9 +22,10 @@ public class MedicoServiceImpl extends GenericCrudServiceImpl<Medico>
 
     @Override
     @Transactional
-    public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
+    public Medico atualizarInformacoes(DadosAtualizacaoMedico dados) {
         var medico = this.findById(dados.id());
         medico.atualizarInformacoes(dados);
+        return medico;
     }
 
     @Override
