@@ -7,7 +7,6 @@ import med.voll.api.model.entity.medico.Especialidade;
 import med.voll.api.model.entity.medico.Medico;
 import med.voll.api.model.entity.paciente.DadosCadastroPaciente;
 import med.voll.api.model.entity.paciente.Paciente;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,60 +22,75 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 
 
-
 @DataJpaTest
 //configurar para usar o mesmo banco de dados e nao usar banco em memoria, tipo h2
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-class MedicoRepositoryTest {
+class ConsultaRepositoryTest {
 
     @Autowired
-    private MedicoRepository medicoRepository;
+    private ConsultaRepository repository;
 
     @Autowired
     private TestEntityManager em;
 
 
-    @Test
-    @DisplayName("Deve buscar medico ativo")
-    void deveBuscarMedicoAtivo() {
-        var medico = cadastrarMedico("Medico", "medico@voll.med", "123456", Especialidade.CARDIOLOGIA);
-        var medicoLivre = medicoRepository.findAtivoById(medico.getId());
-        Assertions.assertTrue(medicoLivre);
-    }
 
     @Test
-    @DisplayName("Deveria devolver null quando unico medico cadastrado nao esta disponivel na data")
-    void escolherMedicoAleatorioLivreNaDataCenario1() {
+    @DisplayName("Deve existir uma consulta para o paciente no mesmo dia")
+    void devePossuirConsultaPacienteCenario1() {
         var proximaSegundaAs10 = LocalDate.now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
                 .atTime(10, 0);
+
+        var primeiroHorario = proximaSegundaAs10.withHour(7);
+        var ultimoHorario = proximaSegundaAs10.withHour(18);
 
         var medico = cadastrarMedico("Medico", "medico@voll.med", "123456", Especialidade.CARDIOLOGIA);
         var paciente = cadastrarPaciente("Paciente", "paciente@email.com", "00000000000");
         cadastrarConsulta(medico, paciente, proximaSegundaAs10);
 
-        var medicoLivre = medicoRepository.escolherMedicoAleatorioLivreNaData(Especialidade.CARDIOLOGIA, proximaSegundaAs10);
-        org.assertj.core.api.Assertions.assertThat(medicoLivre).isNull();
+        var possuiPaciente = repository.existsByPacienteIdAndDataBetween(paciente.getId(), primeiroHorario, ultimoHorario);
+        Assertions.assertTrue(possuiPaciente);
     }
 
-
     @Test
-    @DisplayName("Deveria devolver medico quando ele estiver disponivel na data")
-    void escolherMedicoAleatorioLivreNaDataCenario2() {
-        //given ou arrange
+    @DisplayName("Não deve existir uma consulta para outro paciente no mesmo dia")
+    void naoDevePossuirConsultaPacienteCenario2() {
         var proximaSegundaAs10 = LocalDate.now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
                 .atTime(10, 0);
+
+        var primeiroHorario = proximaSegundaAs10.withHour(7);
+        var ultimoHorario = proximaSegundaAs10.withHour(18);
+
         var medico = cadastrarMedico("Medico", "medico@voll.med", "123456", Especialidade.CARDIOLOGIA);
+        var paciente = cadastrarPaciente("Paciente", "paciente@email.com", "00000000000");
+        cadastrarConsulta(medico, paciente, proximaSegundaAs10);
 
-        //when ou act
-        var medicoLivre = medicoRepository.escolherMedicoAleatorioLivreNaData(Especialidade.CARDIOLOGIA, proximaSegundaAs10);
+        var paciente2 = cadastrarPaciente("Paciente 2", "paciente2@email.com", "2353453");
 
-        //then ou assert
-        org.assertj.core.api.Assertions.assertThat(medicoLivre).isEqualTo(medico);
+        var possuiPaciente = repository.existsByPacienteIdAndDataBetween(paciente2.getId(), primeiroHorario, ultimoHorario);
+        Assertions.assertFalse(possuiPaciente);
     }
 
+    @Test
+    @DisplayName("Não deve existir uma consulta para o mesmo paciente em outro dia")
+    void naoDevePossuirConsultaPacienteCenario3() {
+        var proximaSegundaAs10 = LocalDate.now()
+                .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
+                .atTime(10, 0);
+
+        var primeiroHorario = LocalDateTime.now().withHour(7);
+        var ultimoHorario = LocalDateTime.now().withHour(18);
+
+        var medico = cadastrarMedico("Medico", "medico@voll.med", "123456", Especialidade.CARDIOLOGIA);
+        var paciente = cadastrarPaciente("Paciente", "paciente@email.com", "00000000000");
+        cadastrarConsulta(medico, paciente, proximaSegundaAs10);
+
+        var possuiPaciente = repository.existsByPacienteIdAndDataBetween(paciente.getId(), primeiroHorario, ultimoHorario);
+        Assertions.assertFalse(possuiPaciente);
+    }
 
 
     private void cadastrarConsulta(Medico medico, Paciente paciente, LocalDateTime data) {
