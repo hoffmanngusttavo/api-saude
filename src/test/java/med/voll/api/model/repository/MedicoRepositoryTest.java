@@ -33,7 +33,7 @@ class MedicoRepositoryTest {
     @DisplayName("Deveria devolver null quando único médico cadastrado não está disponível na data")
     void escolherMedicoAleatorioLivreNaData() {
         var proximaSegunda = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY)).atTime(10, 0);
-        var medico = repository.escolherMedicoAleatorioLivreNaData(Especialidade.CARDIOLOGIA);
+        var medico = repository.escolherMedicoAleatorioLivreNaData(Especialidade.CARDIOLOGIA, proximaSegunda);
         Assertions.assertThat(medico).isNull();
     }
 }
