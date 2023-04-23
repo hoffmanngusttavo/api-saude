@@ -2,14 +2,16 @@ package med.voll.api.model.service.impl;
 
 
 import med.voll.api.exceptions.ValidacaoException;
-import med.voll.api.model.component.agenda.ValidadorAgendamentoConsulta;
+import med.voll.api.model.service.consultas.validacoes.agendamento.ValidadorAgendamentoConsulta;
 import med.voll.api.model.entity.consulta.Consulta;
 import med.voll.api.model.entity.consulta.DadosAgendamentoConsulta;
 import med.voll.api.model.entity.consulta.DadosCancelamentoConsulta;
+import med.voll.api.model.entity.consulta.DadosDetalhamentoConsulta;
 import med.voll.api.model.entity.medico.Medico;
-import med.voll.api.model.service.ConsultaService;
+import med.voll.api.model.service.consultas.ConsultaService;
 import med.voll.api.model.service.MedicoService;
 import med.voll.api.model.service.PacienteService;
+import med.voll.api.model.service.consultas.validacoes.cancelamento.ValidadorCancelamentoConsulta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,24 +31,30 @@ public class ConsultaServiceImpl extends GenericCrudServiceImpl<Consulta>
     private MedicoService medicoService;
 
     @Autowired
-    private List<ValidadorAgendamentoConsulta> validadores;
+    private List<ValidadorAgendamentoConsulta> validadoresAgendamento;
+
+    @Autowired
+    private List<ValidadorCancelamentoConsulta> validadoresCancelamento;
 
     @Override
     @Transactional
-    public void agendar(DadosAgendamentoConsulta dados) {
+    public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados) {
         var paciente = pacienteService.getReferenceById(dados.idPaciente());
         var medico = escolherMedico(dados);
 
-        validadores.forEach(val -> val.validar(dados));
+        validadoresAgendamento.forEach(val -> val.validar(dados));
 
         var consulta = new Consulta(null, medico, paciente, dados.data(), null);
         repository.save(consulta);
+
+        return new DadosDetalhamentoConsulta(consulta);
     }
 
     @Override
     @Transactional
     public void cancelar(DadosCancelamentoConsulta dados) {
-        var consulta = repository.getReferenceById(dados.idConsulta());
+        var consulta = this.getReferenceById(dados.idConsulta());
+        validadoresCancelamento.forEach(val -> val.validar(dados));
         consulta.cancelar(dados.motivo());
     }
 
@@ -59,6 +67,10 @@ public class ConsultaServiceImpl extends GenericCrudServiceImpl<Consulta>
             throw new ValidacaoException("Especialidade é obrigatória quando médico não for escolhido");
         }
 
-        return medicoService.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
+        var medico = medicoService.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
+        if(medico == null){
+            throw new ValidacaoException("Não existe médico disponível nessa data");
+        }
+        return medico;
     }
 }

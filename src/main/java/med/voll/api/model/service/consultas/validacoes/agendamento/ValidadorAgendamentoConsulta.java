@@ -1,4 +1,4 @@
-package med.voll.api.model.component.agenda;
+package med.voll.api.model.service.consultas.validacoes.agendamento;
 
 import med.voll.api.model.entity.consulta.DadosAgendamentoConsulta;
 
