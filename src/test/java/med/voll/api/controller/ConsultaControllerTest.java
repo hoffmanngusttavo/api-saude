@@ -1,7 +1,11 @@
 package med.voll.api.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+import med.voll.api.exceptions.ValidacaoException;
 import med.voll.api.model.entity.consulta.DadosAgendamentoConsulta;
+import med.voll.api.model.entity.consulta.DadosCancelamentoConsulta;
 import med.voll.api.model.entity.consulta.DadosDetalhamentoConsulta;
+import med.voll.api.model.entity.consulta.MotivoCancelamento;
 import med.voll.api.model.entity.medico.Especialidade;
 import med.voll.api.model.service.consultas.ConsultaService;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +24,8 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
@@ -36,6 +41,9 @@ class ConsultaControllerTest {
 
     @Autowired
     private JacksonTester<DadosAgendamentoConsulta> dadosAgendamentoConsultaJson;
+
+    @Autowired
+    private JacksonTester<DadosCancelamentoConsulta> dadosCancelamentoConsultaJson;
 
     @Autowired
     private JacksonTester<DadosDetalhamentoConsulta> dadosDetalhamentoConsultaJson;
@@ -81,6 +89,58 @@ class ConsultaControllerTest {
         assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
     }
 
+
+    @Test
+    @DisplayName("Deve retornar erro 400-BAD REQUEST por nao encontrar id")
+    void deve_cancelar_cenario1() throws Exception {
+        var dadosCancelamento = new DadosCancelamentoConsulta(53454l, MotivoCancelamento.OUTROS);
+        doThrow(ValidacaoException.class).when(service).cancelar(dadosCancelamento);
+
+        var response = mvc.
+                perform(
+                        delete("/consultas")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(dadosCancelamentoConsultaJson.write(dadosCancelamento).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("Deve retornar erro 400-BAD REQUEST por nao enviar com motivo de cancelamento")
+    void deve_cancelar_cenario2() throws Exception {
+        var dadosCancelamento = new DadosCancelamentoConsulta(5l, null);
+        doNothing().when(service).cancelar(dadosCancelamento);
+        var response = mvc.
+                perform(
+                        delete("/consultas")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(dadosCancelamentoConsultaJson.write(dadosCancelamento).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("Deve cancelar com sucesso e retornar 204")
+    void deve_cancelar_cenario3() throws Exception {
+        var dadosCancelamento = new DadosCancelamentoConsulta(5l, MotivoCancelamento.PACIENTE_DESISTIU);
+        doNothing().when(service).cancelar(dadosCancelamento);
+        var response = mvc.
+                perform(
+                        delete("/consultas")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(dadosCancelamentoConsultaJson.write(dadosCancelamento).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 
 
 }

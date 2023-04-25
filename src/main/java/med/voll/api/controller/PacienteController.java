@@ -23,8 +23,8 @@ public class PacienteController {
 
     @Operation(description = "Cadastrar paciente")
     @PostMapping
-    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroPaciente dados,  UriComponentsBuilder uriBuilder){
-       var paciente = service.save(new Paciente(dados));
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroPaciente dados, UriComponentsBuilder uriBuilder) {
+        var paciente = service.save(new Paciente(dados));
         var uri = uriBuilder.path("/pacientes/{id}").buildAndExpand(paciente.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosDetalhamentoPaciente(paciente));
     }
@@ -32,7 +32,7 @@ public class PacienteController {
 
     @Operation(description = "Listar todos pacientes ativos")
     @GetMapping
-    public ResponseEntity<Page<DadosListagemPaciente>> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao){
+    public ResponseEntity<Page<DadosListagemPaciente>> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao) {
         var page = service.findAllByAtivoTrue(paginacao)
                 .map(DadosListagemPaciente::new);
         return ResponseEntity.ok(page);
@@ -48,14 +48,14 @@ public class PacienteController {
 
     @Operation(description = "Buscar paciente pelo id")
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id){
+    public ResponseEntity detalhar(@PathVariable Long id) {
         var paciente = service.findById(id);
         return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 
     @Operation(description = "Remover paciente")
     @DeleteMapping("/{id}")
-    public ResponseEntity remover(@PathVariable Long id){
+    public ResponseEntity remover(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }

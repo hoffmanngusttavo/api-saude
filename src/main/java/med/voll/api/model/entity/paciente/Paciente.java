@@ -1,16 +1,14 @@
 package med.voll.api.model.entity.paciente;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import med.voll.api.model.entity.base.BaseEntity;
 import med.voll.api.model.entity.endereco.Endereco;
 
 @Entity
 @Table(name = "pacientes")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
