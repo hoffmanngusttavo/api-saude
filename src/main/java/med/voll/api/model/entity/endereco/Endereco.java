@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Embeddable
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Endereco {
+public class Endereco implements Serializable {
 
     private String logradouro;
     private String bairro;
