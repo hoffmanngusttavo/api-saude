@@ -1,14 +1,15 @@
 package med.voll.api.model.entity.consulta;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
 public record DadosDetalhamentoConsulta(
         Long id,
-        @JsonAlias("id_medico")
+        @JsonProperty("id_medico")
         Long idMedico,
-        @JsonAlias("id_paciente")
+        @JsonProperty("id_paciente")
         Long idPaciente,
         LocalDateTime data) {
 
