@@ -28,6 +28,10 @@ public class Bairro implements BaseEntity {
         this.nome = dados.nome();
     }
 
+    public Bairro(Long id) {
+        this.id = id;
+    }
+
     public void atualizarInformacoes(DadosAtualizacaoBairro dados) {
         this.nome = dados.nome();
     }

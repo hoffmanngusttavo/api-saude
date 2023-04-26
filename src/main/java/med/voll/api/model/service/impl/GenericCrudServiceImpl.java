@@ -7,6 +7,8 @@ import med.voll.api.model.repository.generic.GenericCrudRepository;
 import med.voll.api.model.service.exception.ServiceException;
 import med.voll.api.model.service.GenericCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -68,5 +70,10 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
     @Override
     public boolean existsById(Long id) {
         return repository.existsById(id);
+    }
+
+    @Override
+    public Page<T> findAll(Pageable paginacao) {
+        return repository.findAll(paginacao);
     }
 }

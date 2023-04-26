@@ -57,8 +57,7 @@ public class BairroController {
     @Operation(description = "Buscar todos os bairros")
     @GetMapping
     public ResponseEntity<Page<DadosDetalhamentoBairro>> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao) {
-        var page = service.findAll(paginacao)
-                .map(DadosDetalhamentoBairro::new);
+        var page = service.findAll(paginacao).map(DadosDetalhamentoBairro::new);
         return ResponseEntity.ok(page);
     }
 
