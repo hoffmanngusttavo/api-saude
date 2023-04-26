@@ -1,4 +1,4 @@
-package med.voll.api.model.service.impl;
+package med.voll.api.model.service.consultas;
 
 
 import med.voll.api.exceptions.ValidacaoException;
@@ -12,6 +12,7 @@ import med.voll.api.model.service.consultas.ConsultaService;
 import med.voll.api.model.service.MedicoService;
 import med.voll.api.model.service.PacienteService;
 import med.voll.api.model.service.consultas.validacoes.cancelamento.ValidadorCancelamentoConsulta;
+import med.voll.api.model.service.impl.GenericCrudServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
