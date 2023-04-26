@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.model.entity.base.BaseEntity;
+import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoBairro;
+import med.voll.api.model.entity.medicamento.dto.DadosCadastroBairro;
 
 @Entity
 @Table(name = "bairros_farmacia")
@@ -22,4 +24,11 @@ public class Bairro implements BaseEntity {
     private String nome;
 
 
+    public Bairro(DadosCadastroBairro dados) {
+        this.nome = dados.nome();
+    }
+
+    public void atualizarInformacoes(DadosAtualizacaoBairro dados) {
+        this.nome = dados.nome();
+    }
 }
