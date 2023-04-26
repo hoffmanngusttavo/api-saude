@@ -50,6 +50,10 @@ public class Farmacia implements BaseEntity {
         this.horarioTerminoFuncionamento = dados.horarioTerminoFuncionamento();
     }
 
+    public Farmacia(Long id) {
+        this.id = id;
+    }
+
     public void atualizarInformacoes(DadosAtualizacaoFarmacia dados) {
         this.nome = StringUtils.isNotBlank(dados.nome()) ? dados.nome() : this.nome;
         this.telefone = StringUtils.isNotBlank(dados.telefone()) ? dados.telefone() : this.telefone;

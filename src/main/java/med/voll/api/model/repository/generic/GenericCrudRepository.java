@@ -10,4 +10,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 public interface GenericCrudRepository<T extends BaseEntity> extends JpaRepository<T, Long> {
 
 
+
 }

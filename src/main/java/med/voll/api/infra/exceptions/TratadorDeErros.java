@@ -32,6 +32,10 @@ import java.util.List;
 public class TratadorDeErros {
 
 
+    //DataIntegrityViolationException
+
+
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<StandardError> entityNotFound(EntityNotFoundException exception, HttpServletRequest request){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
