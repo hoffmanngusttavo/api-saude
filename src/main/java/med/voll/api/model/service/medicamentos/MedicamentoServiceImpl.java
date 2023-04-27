@@ -4,8 +4,8 @@ package med.voll.api.model.service.medicamentos;
 import med.voll.api.model.entity.medicamento.Medicamento;
 import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoMedicamento;
 import med.voll.api.model.repository.MedicamentoRepository;
-import med.voll.api.model.repository.MedicoRepository;
 import med.voll.api.model.service.impl.GenericCrudServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,14 @@ public class MedicamentoServiceImpl extends GenericCrudServiceImpl<Medicamento>
     }
 
     @Override
-    public Page<Medicamento> findAllAtivo(Pageable paginacao) {
+    public Page<Medicamento> findAllByDisponivelTrue(Pageable paginacao) {
         return ((MedicamentoRepository) repository).findAllByDisponivelTrue(paginacao);
+    }
+
+    @Override
+    public Page<Medicamento> findByMedicamentosBairro(Long idBairro, String medicamento, Pageable paginacao) {
+        medicamento = StringUtils.isNotBlank(medicamento) ? medicamento : null;
+        return ((MedicamentoRepository) repository).findByMedicamentosBairro(idBairro, medicamento, paginacao);
     }
 
     @Override

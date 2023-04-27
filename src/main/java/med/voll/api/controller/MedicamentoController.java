@@ -58,7 +58,20 @@ public class MedicamentoController {
     @Operation(description = "Buscar todos os medicamentos disponíveis")
     @GetMapping
     public ResponseEntity<Page<DadosDetalhamentoMedicamento>> lista(@PageableDefault(size = 15, sort = {"nome"}) Pageable paginacao) {
-        var page = service.findAllAtivo(paginacao).map(DadosDetalhamentoMedicamento::new);
+        var page = service.findAllByDisponivelTrue(paginacao).map(DadosDetalhamentoMedicamento::new);
+        return ResponseEntity.ok(page);
+    }
+
+    @Operation(description = "Buscar todos os medicamentos disponíveis do bairro")
+    @GetMapping("/bairro/{id-bairro}")
+    public ResponseEntity<Page<DadosDetalhamentoMedicamento>> listaMedicamentosBairro(@PathVariable("id-bairro") Long idBairro,
+                                                                                      @RequestParam(defaultValue = "") String medicamento,
+                                                                                      @PageableDefault(size = 15, sort = {"nome"})
+                                                                                      Pageable paginacao) {
+
+        var page = service.findByMedicamentosBairro(idBairro, medicamento, paginacao)
+                .map(DadosDetalhamentoMedicamento::new);
+
         return ResponseEntity.ok(page);
     }
 
