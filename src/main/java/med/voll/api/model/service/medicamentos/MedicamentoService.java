@@ -14,4 +14,6 @@ public interface MedicamentoService extends GenericCrudService<Medicamento> {
     Page<Medicamento> findAllByDisponivelTrue(Pageable paginacao);
 
     Page<Medicamento> findByMedicamentosBairro(Long idBairro, String medicamento, Pageable paginacao);
+
+    void importarMedicamentosPrefeitura();
 }

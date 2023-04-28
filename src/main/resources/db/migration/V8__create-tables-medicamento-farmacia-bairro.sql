@@ -16,6 +16,7 @@ CREATE TABLE farmacias
     bairro_id bigint       not null,
     horario_inicio_funcionamento   time not null,
     horario_termino_funcionamento   time not null,
+    id_externo  varchar(100) ,
 
     primary key (id),
 
@@ -31,6 +32,8 @@ CREATE TABLE medicamentos
     disponivel  tinyint  not null,
     miligramas  decimal not null,
     farmacia_id bigint   not null,
+    data_ultima_atualizacao  datetime not null,
+    id_externo  varchar(100) ,
 
     primary key (id),
 

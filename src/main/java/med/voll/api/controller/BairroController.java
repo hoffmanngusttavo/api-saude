@@ -8,6 +8,7 @@ import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoBairro;
 import med.voll.api.model.entity.medicamento.dto.DadosCadastroBairro;
 import med.voll.api.model.entity.medicamento.dto.DadosDetalhamentoBairro;
 import med.voll.api.model.service.medicamentos.BairroService;
+import med.voll.api.web.client.CepEnderecoWebRequestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public class BairroController {
     @Autowired
     private BairroService service;
 
+    @Autowired
+    private CepEnderecoWebRequestClient cepEnderecoWebRequestClient;
 
     @Operation(description = "Cadastrar bairros da farmácia")
     @PostMapping
@@ -52,6 +55,13 @@ public class BairroController {
     public ResponseEntity detalhar(@PathVariable Long id) {
         var bairro = service.findById(id);
         return ResponseEntity.ok(new DadosDetalhamentoBairro(bairro));
+    }
+
+    @Operation(description = "Buscar dados endereço pelo cep")
+    @GetMapping("/cep/{cep}")
+    public ResponseEntity buscarDadosEndereco(@PathVariable String cep) {
+        var dados = cepEnderecoWebRequestClient.buscarDadosEnderecoByCep(cep);
+        return ResponseEntity.ok(dados);
     }
 
     @Operation(description = "Buscar todos os bairros")

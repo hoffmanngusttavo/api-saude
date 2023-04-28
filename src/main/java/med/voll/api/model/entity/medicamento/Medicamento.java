@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import med.voll.api.model.entity.base.BaseEntity;
 import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoMedicamento;
 import med.voll.api.model.entity.medicamento.dto.DadosCadastroMedicamento;
+import med.voll.api.model.entity.medicamento.dto.DadosIntegracaoMedicamentoPrefeitura;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medicamentos")
@@ -35,6 +38,12 @@ public class Medicamento implements BaseEntity {
     @JoinColumn(name = "farmacia_id")
     private Farmacia farmacia;
 
+    @Column(name = "data_ultima_atualizacao")
+    private LocalDateTime dataUltimaAtualizacao;
+
+    @Column(name = "id_externo")
+    private String idExterno;
+
 
     public Medicamento(DadosCadastroMedicamento dados) {
         this.farmacia = new Farmacia(dados.idFarmacia());
@@ -42,16 +51,27 @@ public class Medicamento implements BaseEntity {
         this.laboratorio = dados.laboratorio();
         this.disponivel = dados.disponivel();
         this.miligramas = dados.miligramas();
+        this.dataUltimaAtualizacao = LocalDateTime.now();
     }
 
     public void atualizarInformacoes(DadosAtualizacaoMedicamento dados) {
         this.nome = StringUtils.isNotBlank(dados.nome()) ? dados.nome() : this.nome;
         this.laboratorio = StringUtils.isNotBlank(dados.laboratorio()) ? dados.laboratorio() : this.laboratorio;
         this.miligramas = dados.miligramas();
+        this.dataUltimaAtualizacao = LocalDateTime.now();
     }
 
     public void tornarIndisponivel(){
         this.disponivel = Boolean.FALSE;
     }
 
+    public void integrarInformacoes(DadosIntegracaoMedicamentoPrefeitura dados, Farmacia unidadeSaude) {
+        this.idExterno = dados.uuid();
+        this.farmacia = unidadeSaude;
+        this.nome = dados.nome();
+        this.laboratorio = dados.laboratorio();
+        this.disponivel = dados.disponivel();
+        this.miligramas = dados.miligramas();
+        this.dataUltimaAtualizacao = LocalDateTime.now();
+    }
 }

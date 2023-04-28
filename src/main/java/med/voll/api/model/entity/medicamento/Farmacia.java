@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import med.voll.api.model.entity.base.BaseEntity;
 import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoFarmacia;
 import med.voll.api.model.entity.medicamento.dto.DadosCadastroFarmacia;
+import med.voll.api.model.entity.medicamento.dto.DadosIntegracaoUnidadeSaudePrefeitura;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalTime;
@@ -41,6 +42,9 @@ public class Farmacia implements BaseEntity {
     @JoinColumn(name = "bairro_id")
     private Bairro bairro;
 
+    @Column(name = "id_externo")
+    private String idExterno;
+
     public Farmacia(DadosCadastroFarmacia dados) {
         this.bairro = new Bairro(dados.idBairro());
         this.nome = dados.nome();
@@ -52,6 +56,16 @@ public class Farmacia implements BaseEntity {
 
     public Farmacia(Long id) {
         this.id = id;
+    }
+
+    public Farmacia(DadosIntegracaoUnidadeSaudePrefeitura dados, Bairro bairro) {
+        this.idExterno = dados.uuid();
+        this.bairro = bairro;
+        this.nome = dados.nome();
+        this.telefone = dados.telefone();
+        this.endereco = dados.logradouro();
+        this.horarioInicioFuncionamento = LocalTime.of(8,0);
+        this.horarioTerminoFuncionamento = LocalTime.of(22,0);
     }
 
     public void atualizarInformacoes(DadosAtualizacaoFarmacia dados) {

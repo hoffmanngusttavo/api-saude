@@ -1,9 +1,9 @@
-package med.voll.api.web;
+package med.voll.api.web.client;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import med.voll.api.web.exception.WebRequestClientException;
+import med.voll.api.web.client.exception.WebRequestClientException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ClientHttpConnector;

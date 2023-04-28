@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MedicamentoRepository extends GenericCrudRepository<Medicamento> {
 
@@ -21,4 +23,6 @@ public interface MedicamentoRepository extends GenericCrudRepository<Medicamento
         and (UPPER(m.nome) like CONCAT('%',UPPER(?2),'%') or ?2 is null)
             """)
     Page<Medicamento> findByMedicamentosBairro(Long idBairro, String medicamento, Pageable paginacao);
+
+    Optional<Medicamento> findByIdExterno(String uuid);
 }
