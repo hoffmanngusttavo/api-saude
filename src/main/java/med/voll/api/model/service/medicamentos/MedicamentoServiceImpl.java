@@ -4,6 +4,7 @@ package med.voll.api.model.service.medicamentos;
 import med.voll.api.model.entity.medicamento.Medicamento;
 import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoMedicamento;
 import med.voll.api.model.entity.medicamento.dto.DadosIntegracaoMedicamentoPrefeitura;
+import med.voll.api.model.entity.medicamento.dto.RetornoPaginacaoMedicamentoPrefeitura;
 import med.voll.api.model.repository.MedicamentoRepository;
 import med.voll.api.model.service.impl.GenericCrudServiceImpl;
 import med.voll.api.web.client.PrefeituraWebRequestClient;
@@ -53,14 +54,14 @@ public class MedicamentoServiceImpl extends GenericCrudServiceImpl<Medicamento>
     @Transactional
     public void importarMedicamentosPrefeitura() {
         var dataAtual = LocalDate.now();
-        int limit = 25;
+        int limit = 2;
         int page = 0;
-        Page<DadosIntegracaoMedicamentoPrefeitura> pages = null;
+        RetornoPaginacaoMedicamentoPrefeitura pages;
         do {
             pages = prefeituraWebRequestClient.getRequest(dataAtual, limit, page);
             associarMedicamentos(pages.getContent());
             page++;
-        } while (pages.hasNext());
+        } while (page < pages.getTotalPages());
     }
 
     private void associarMedicamentos(List<DadosIntegracaoMedicamentoPrefeitura> content) {
