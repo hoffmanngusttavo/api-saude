@@ -11,6 +11,8 @@ public interface GenericCrudService<T extends BaseEntity>{
 
     T save (T entity);
 
+    T saveAndFlush (T entity);
+
     void deleteById(Long id);
 
     T findById(Long id);

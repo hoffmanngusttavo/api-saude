@@ -33,6 +33,7 @@ public class FarmaciaServiceImpl extends GenericCrudServiceImpl<Farmacia>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Farmacia> findByIdExterno(String idExterno) {
         return ((FarmaciaRepository) repository).findByIdExterno(idExterno);
     }
@@ -40,8 +41,10 @@ public class FarmaciaServiceImpl extends GenericCrudServiceImpl<Farmacia>
     @Override
     @Transactional
     public Farmacia criarNovaUnidadeSaude(DadosIntegracaoUnidadeSaudePrefeitura dtoIntegracao) {
-        var bairro = bairroService.findByNome(dtoIntegracao.bairro())
-                .orElse(new Bairro(dtoIntegracao.bairro()));
+        if(bairroService.findByNome(dtoIntegracao.bairro()).isEmpty()){
+            bairroService.save(new Bairro(dtoIntegracao.bairro()));
+        }
+        var bairro = bairroService.findByNome(dtoIntegracao.bairro()).get();
         var farmacia = new Farmacia(dtoIntegracao, bairro);
         return save(farmacia);
     }

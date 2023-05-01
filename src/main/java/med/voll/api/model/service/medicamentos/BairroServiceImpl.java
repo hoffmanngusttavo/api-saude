@@ -26,6 +26,7 @@ public class BairroServiceImpl extends GenericCrudServiceImpl<Bairro>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Bairro> findByNome(String nome) {
         return ((BairroRepository) repository).findByNome(nome);
     }

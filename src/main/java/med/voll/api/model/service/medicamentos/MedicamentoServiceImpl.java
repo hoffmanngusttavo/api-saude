@@ -40,11 +40,13 @@ public class MedicamentoServiceImpl extends GenericCrudServiceImpl<Medicamento>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Medicamento> findAllByDisponivelTrue(Pageable paginacao) {
         return ((MedicamentoRepository) repository).findAllByDisponivelTrue(paginacao);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Medicamento> findByMedicamentosBairro(Long idBairro, String medicamento, Pageable paginacao) {
         medicamento = StringUtils.isNotBlank(medicamento) ? medicamento : null;
         return ((MedicamentoRepository) repository).findByMedicamentosBairro(idBairro, medicamento, paginacao);
@@ -53,12 +55,12 @@ public class MedicamentoServiceImpl extends GenericCrudServiceImpl<Medicamento>
     @Override
     @Transactional
     public void importarMedicamentosPrefeitura() {
-        var dataAtual = LocalDate.now();
-        int limit = 2;
+        var ontem = LocalDate.now().minusDays(1);
+        int limit = 200;
         int page = 0;
         RetornoPaginacaoMedicamentoPrefeitura pages;
         do {
-            pages = prefeituraWebRequestClient.getRequest(dataAtual, limit, page);
+            pages = prefeituraWebRequestClient.getRequest(ontem, limit, page);
             associarMedicamentos(pages.getContent());
             page++;
         } while (page < pages.getTotalPages());
@@ -68,8 +70,10 @@ public class MedicamentoServiceImpl extends GenericCrudServiceImpl<Medicamento>
 
         for (DadosIntegracaoMedicamentoPrefeitura dto : content) {
 
-            var unidadeSaude = farmaciaService.findByIdExterno(dto.unidadeSaude().uuid())
-                    .orElse(farmaciaService.criarNovaUnidadeSaude(dto.unidadeSaude()));
+            if (farmaciaService.findByIdExterno(dto.unidadeSaude().uuid()).isEmpty()) {
+                farmaciaService.criarNovaUnidadeSaude(dto.unidadeSaude());
+            }
+            var unidadeSaude = farmaciaService.findByIdExterno(dto.unidadeSaude().uuid()).get();
 
             var medicamento = ((MedicamentoRepository) repository).findByIdExterno(dto.uuid())
                     .orElse(new Medicamento());

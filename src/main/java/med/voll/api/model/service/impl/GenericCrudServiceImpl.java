@@ -17,7 +17,9 @@ import java.util.Optional;
 public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrudService<T> {
 
 
-   @Autowired
+    public static final String ID_NOT_FOUND = "Id not found ";
+
+    @Autowired
    protected GenericCrudRepository<T> repository;
 
     @Override
@@ -32,10 +34,20 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
 
     @Override
     @Transactional
+    public T saveAndFlush(T entity) {
+        try {
+            return repository.saveAndFlush(entity);
+        }catch (Exception ex){
+            throw new ServiceException(ex);
+        }
+    }
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         try {
             if(!repository.existsById(id)){
-                throw new EntityNotFoundException("Id not found "+id);
+                throw new EntityNotFoundException(ID_NOT_FOUND +id);
             }
             repository.deleteById(id);
         }catch (Exception ex){
@@ -48,7 +60,7 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
     public T findById(Long id) {
         try {
            return repository.findById(id)
-                   .orElseThrow(() -> new EntityNotFoundException("Id not found "+ id));
+                   .orElseThrow(() -> new EntityNotFoundException(ID_NOT_FOUND + id));
         }catch (Exception ex){
             throw new ServiceException(ex);
         }
@@ -62,7 +74,7 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
     @Override
     public T getReferenceById(Long id) {
         if(!repository.existsById(id)){
-            throw new ValidacaoException("Id not found "+ id);
+            throw new ValidacaoException(ID_NOT_FOUND + id);
         }
         return repository.getReferenceById(id);
     }

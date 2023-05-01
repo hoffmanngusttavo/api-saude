@@ -27,7 +27,7 @@ CREATE TABLE farmacias
 CREATE TABLE medicamentos
 (
     id        bigint       not null auto_increment,
-    nome      varchar(100) not null unique,
+    nome      varchar(100) not null,
     laboratorio  varchar(200) not null,
     disponivel  tinyint  not null,
     miligramas  decimal not null,

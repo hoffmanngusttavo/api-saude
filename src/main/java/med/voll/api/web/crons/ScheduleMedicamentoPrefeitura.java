@@ -18,7 +18,7 @@ public class ScheduleMedicamentoPrefeitura {
 
     private static final String TIME_ZONE = "America/Sao_Paulo";
 
-    @Scheduled(cron = "*/20 * * * * *", zone = TIME_ZONE)
+    @Scheduled(cron = "*/30 * * * * *", zone = TIME_ZONE)
     public void importarMedicamentos() {
         medicamentoService.importarMedicamentosPrefeitura();
     }
