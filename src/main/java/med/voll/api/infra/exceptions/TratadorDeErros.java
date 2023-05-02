@@ -6,11 +6,13 @@ import lombok.Getter;
 import med.voll.api.exceptions.ValidacaoException;
 import med.voll.api.model.service.exception.ServiceException;
 import org.hibernate.TypeMismatchException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,8 +34,20 @@ import java.util.List;
 public class TratadorDeErros {
 
 
-    //DataIntegrityViolationException
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> entidadesRelacionadas(DataIntegrityViolationException exception, HttpServletRequest request){
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new StandardError.StandardErrorBuilder()
+                        .timestamp(Instant.now())
+                        .status(HttpStatus.CONFLICT.value())
+                        .errors(List.of("Objeto está relacionado a outro item"))
+                        .message(exception.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+
+    }
 
 
     @ExceptionHandler(EntityNotFoundException.class)

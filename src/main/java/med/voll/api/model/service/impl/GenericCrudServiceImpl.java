@@ -45,25 +45,16 @@ public class GenericCrudServiceImpl<T extends BaseEntity> implements GenericCrud
     @Override
     @Transactional
     public void deleteById(Long id) {
-        try {
-            if(!repository.existsById(id)){
-                throw new EntityNotFoundException(ID_NOT_FOUND +id);
-            }
-            repository.deleteById(id);
-        }catch (Exception ex){
-            throw new ServiceException("Não foi possível remover objeto com id "+id, ex);
+        if(!repository.existsById(id)){
+            throw new EntityNotFoundException(ID_NOT_FOUND +id);
         }
-
+        repository.deleteById(id);
     }
 
     @Override
     public T findById(Long id) {
-        try {
-           return repository.findById(id)
-                   .orElseThrow(() -> new EntityNotFoundException(ID_NOT_FOUND + id));
-        }catch (Exception ex){
-            throw new ServiceException(ex);
-        }
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ID_NOT_FOUND + id));
     }
 
     @Override
