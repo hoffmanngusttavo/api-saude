@@ -18,6 +18,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +49,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deveria devolver codigo http 400 quando informacoes estao invalidas")
+    @WithMockUser
     void cadastrar_cenario1() throws Exception {
         var response = mvc
                 .perform(post(RESOURCE_PACIENTES))
@@ -59,6 +61,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deveria devolver codigo http 201 quando cadastrou paciente com sucesso")
+    @WithMockUser
     void cadastrar_cenario2() throws Exception {
         var dadosCadastro = new DadosCadastroPaciente(
                 "Paciente teste",
@@ -92,6 +95,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deveria devolver codigo http 400 quando não é enviado corpo na requisição")
+    @WithMockUser
     void deve_atualizar_cenario1() throws Exception {
         var response = mvc
                 .perform(put(RESOURCE_PACIENTES))
@@ -104,6 +108,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deveria devolver codigo http 400 quando não é enviado id do paciente na requisição")
+    @WithMockUser
     void deve_atualizar_cenario2() throws Exception {
 
         var dtoRequest = new DadosAtualizacaoPaciente(
@@ -125,6 +130,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deveria devolver codigo http 200 quando atualizou paciente com sucesso")
+    @WithMockUser
     void deve_atualizar_cenario3() throws Exception {
         var dtoRequest = new DadosAtualizacaoPaciente(
                 1L,
@@ -153,6 +159,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deve retornar erro 404 not found por nao encontrar id")
+    @WithMockUser
     void deve_remover_cenario1() throws Exception {
         var idPaciente = 1000L;
         doThrow(EntityNotFoundException.class).when(service).deleteById(idPaciente);
@@ -164,6 +171,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deve remover com sucesso e retornar 204")
+    @WithMockUser
     void deve_remover_cenario2() throws Exception {
         var idPaciente = 10L;
         doNothing().when(service).deleteById(idPaciente);
@@ -176,6 +184,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deve retornar erro 404 not found por nao encontrar id")
+    @WithMockUser
     void deve_detalhar_cenario1() throws Exception {
         var idPaciente = 1000L;
         doThrow(EntityNotFoundException.class).when(service).findById(idPaciente);
@@ -187,6 +196,7 @@ class PacienteControllerTest {
 
     @Test
     @DisplayName("Deve retornar detalhe do paciente e status 200")
+    @WithMockUser
     void deve_detalhar_cenario2() throws Exception {
         var idPaciente = 1l;
         var paciente = instanciarPaciente();

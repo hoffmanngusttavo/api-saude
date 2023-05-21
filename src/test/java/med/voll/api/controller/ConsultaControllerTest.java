@@ -18,6 +18,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -50,7 +51,7 @@ class ConsultaControllerTest {
 
     @Test
     @DisplayName("Deveria devolver status 400 quando informações forem inválidas")
-    //@WithMockUser - //quando add autenticação e precisar ignorar
+    @WithMockUser //quando add autenticação e precisar ignorar
     void deveRetornarStatus400AgendarCenario1() throws Exception {
         var response = mvc.perform(post("/consultas"))
                 .andReturn().getResponse();
@@ -60,7 +61,7 @@ class ConsultaControllerTest {
 
     @Test
     @DisplayName("Deveria retornar status 200 quando informações estão válidas")
-    //@WithMockUser - //quando add autenticação e precisar ignorar
+    @WithMockUser //quando add autenticação e precisar ignorar
     void deveRetornarStatus200AgendarCenario1() throws Exception {
 
         var data = LocalDateTime.now().plusHours(1);
@@ -92,6 +93,7 @@ class ConsultaControllerTest {
 
     @Test
     @DisplayName("Deve retornar erro 400-BAD REQUEST por nao encontrar id")
+    @WithMockUser
     void deve_cancelar_cenario1() throws Exception {
         var dadosCancelamento = new DadosCancelamentoConsulta(53454l, MotivoCancelamento.OUTROS);
         doThrow(ValidacaoException.class).when(service).cancelar(dadosCancelamento);
@@ -110,6 +112,7 @@ class ConsultaControllerTest {
 
     @Test
     @DisplayName("Deve retornar erro 400-BAD REQUEST por nao enviar com motivo de cancelamento")
+    @WithMockUser
     void deve_cancelar_cenario2() throws Exception {
         var dadosCancelamento = new DadosCancelamentoConsulta(5l, null);
         doNothing().when(service).cancelar(dadosCancelamento);
@@ -127,6 +130,7 @@ class ConsultaControllerTest {
 
     @Test
     @DisplayName("Deve cancelar com sucesso e retornar 204")
+    @WithMockUser
     void deve_cancelar_cenario3() throws Exception {
         var dadosCancelamento = new DadosCancelamentoConsulta(5l, MotivoCancelamento.PACIENTE_DESISTIU);
         doNothing().when(service).cancelar(dadosCancelamento);
