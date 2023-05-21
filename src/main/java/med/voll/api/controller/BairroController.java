@@ -1,8 +1,10 @@
 package med.voll.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import med.voll.api.infra.docs.SpringDocConfigurations;
 import med.voll.api.model.entity.medicamento.Bairro;
 import med.voll.api.model.entity.medicamento.dto.DadosAtualizacaoBairro;
 import med.voll.api.model.entity.medicamento.dto.DadosCadastroBairro;
@@ -20,6 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Tag(name = "Bairros farmácias")
 @RestController
 @RequestMapping("/bairros-farmacia")
+@SecurityRequirement(name = SpringDocConfigurations.BEARER_KEY)
 public class BairroController {
 
     @Autowired

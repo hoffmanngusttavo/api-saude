@@ -29,6 +29,7 @@ public class SecurityConfigurations {
      * pois o jwt já garante segurança.
      * Informar que o metodo de login não precisa estar autenticado.
      * Informar ao spring executar primeiro nosso filtro e depois o dele.
+     * Liberar o swagger para ficar publico o acesso.
      * */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +37,7 @@ public class SecurityConfigurations {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers("/v3/api-docs/**","/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

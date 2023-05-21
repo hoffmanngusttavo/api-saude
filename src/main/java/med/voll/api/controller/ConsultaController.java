@@ -1,8 +1,10 @@
 package med.voll.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import med.voll.api.infra.docs.SpringDocConfigurations;
 import med.voll.api.model.entity.consulta.DadosAgendamentoConsulta;
 import med.voll.api.model.entity.consulta.DadosCancelamentoConsulta;
 import med.voll.api.model.service.consultas.ConsultaService;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Agendamento de Consultas")
 @RestController
 @RequestMapping("/consultas")
+@SecurityRequirement(name = SpringDocConfigurations.BEARER_KEY)
 public class ConsultaController {
 
     @Autowired

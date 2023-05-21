@@ -29,7 +29,7 @@ public class AutenticacaoController {
     private TokenService tokenService;
 
 
-    @Operation(description = "Cadastrar Agendamento de consulta")
+    @Operation(description = "Efetuar o login com as credenciais e retornar o token gerado")
     @PostMapping
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());

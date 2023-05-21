@@ -1,8 +1,10 @@
 package med.voll.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import med.voll.api.infra.docs.SpringDocConfigurations;
 import med.voll.api.model.entity.medico.*;
 import med.voll.api.model.service.MedicoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Tag(name = "Médicos")
 @RestController
 @RequestMapping("/medicos")
+@SecurityRequirement(name = SpringDocConfigurations.BEARER_KEY)
 public class MedicoController {
 
     @Autowired
