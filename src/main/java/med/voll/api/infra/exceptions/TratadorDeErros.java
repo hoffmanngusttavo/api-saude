@@ -10,6 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +31,6 @@ import java.util.List;
 
 /**
  * https://github.com/brunocleite/spring-boot-exception-handling
- * TODO
  * */
 
 @RestControllerAdvice
@@ -75,6 +78,58 @@ public class TratadorDeErros {
                         .build());
 
     }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<StandardError> tratarErroBadCredentials(BadCredentialsException exception, HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new StandardError.StandardErrorBuilder()
+                        .timestamp(Instant.now())
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .errors(List.of("Credenciais inválidas"))
+                        .message(exception.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity tratarErroAcessoNegado(AccessDeniedException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new StandardError.StandardErrorBuilder()
+                        .timestamp(Instant.now())
+                        .status(HttpStatus.FORBIDDEN.value())
+                        .errors(List.of("Acesso negado"))
+                        .message(exception.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+    }
+
+    @ExceptionHandler({InternalAuthenticationServiceException.class})
+    public ResponseEntity<StandardError> authenticationService(InternalAuthenticationServiceException exception, HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new StandardError.StandardErrorBuilder()
+                        .timestamp(Instant.now())
+                        .status(HttpStatus.FORBIDDEN.value())
+                        .errors(List.of("Acesso negado"))
+                        .message(exception.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity tratarErro400(HttpMessageNotReadableException ex, HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new StandardError.StandardErrorBuilder()
+                        .timestamp(Instant.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .errors(List.of(ex.getMessage()))
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> tratarErro400Ex4(MethodArgumentNotValidException ex, HttpServletRequest request){
